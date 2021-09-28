@@ -72,11 +72,11 @@ public class GregProgrammingBoardTest extends OpMode {
         if(!digitalChannel.getState() && !previousPressed) {
             //Makes the motor go forward if the state is one
             if(state==1) {
-               motor.setPower(0.5);
+               motor.setPower(1);
             }
             //Makes the motor go backward if the state is two
             else if(state==2) {
-                motor.setPower(-0.5);
+                motor.setPower(-1);
             }
             //Stops the motor if the state is three
             else if(state==3) {
