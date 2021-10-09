@@ -3,27 +3,35 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name = "TestProgrammingBoard", group = "Test")
-public class TestProgrammingBoard extends OpMode {
+@TeleOp(name = "MatthewTestProgrammingBoard", group = "Test")
+public class MatthewTestProgrammingBoard extends OpMode {
 
-    DcMotor motor = null;
     Servo servo = null;
+    DcMotor motor;
     BNO055IMU imu = null;
     ColorSensor colorSensor = null;
     AnalogInput analogInput = null;
     DigitalChannel digitalChannel = null;
     DistanceSensor distanceSensor = null;
+    double[] speeds={0.5,-0.5,0.0};
+    int state=0;
+    boolean previouslyPressed=false;
 
     public void init(){
         motor = hardwareMap.get(DcMotor.class, "motor");
 
         servo = hardwareMap.get(Servo.class, "servo");
-        servo.setPosition(0.5);
 
         colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
@@ -52,11 +60,18 @@ public class TestProgrammingBoard extends OpMode {
         telemetry.addData("Motor Orientation", motorConfigType.getOrientation());
 
     }
+    public void loop() {
 
-
-    public void loop(){
-        motor.setPower(-gamepad1.left_stick_y);
-        servo.setPosition(0.5*(gamepad1.right_stick_y + 1));
+        if(previouslyPressed==false&&!digitalChannel.getState()) {
+            motor.setPower(speeds[state]);
+            state=(state+1)%3;
+            previouslyPressed=true;
+        }
+        if(digitalChannel.getState()) {
+            previouslyPressed=false;
+        }
+        //motor.setPower(-gamepad1.left_stick_y);
+        //servo.setPosition(0.5*(gamepad1.right_stick_y + 1));
         Orientation orientation = imu.getAngularOrientation();
         telemetry.addData("Heading", "%.1f deg", orientation.firstAngle);
         telemetry.addData("Ticks", motor.getCurrentPosition());
@@ -65,7 +80,6 @@ public class TestProgrammingBoard extends OpMode {
         telemetry.addData("Color", "R: %d  G: %d  B: %d", colorSensor.red(),
                 colorSensor.green(), colorSensor.blue());
         telemetry.addData("Distance (CM)", distanceSensor.getDistance(DistanceUnit.CM));
-
     }
 
 }
