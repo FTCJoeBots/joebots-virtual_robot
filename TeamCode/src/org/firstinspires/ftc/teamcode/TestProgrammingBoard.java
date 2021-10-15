@@ -10,18 +10,28 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name = "TestProgrammingBoard", group = "Test")
 public class TestProgrammingBoard extends OpMode {
-
-    DcMotor motor = null;
+    liftmatthewangeski lm = new liftmatthewangeski();
     Servo servo = null;
     BNO055IMU imu = null;
     ColorSensor colorSensor = null;
     AnalogInput analogInput = null;
     DigitalChannel digitalChannel = null;
     DistanceSensor distanceSensor = null;
+    final int LIFTPOSTION0 = 0;
+    final int LIFTPOSITION1 = 500;
+    final int LIFTPOSITION2 = 1000;
+    final int LIFTPOSITION3 = 1500;
+    final int LIFTPOSITION4 = 2000;
+    boolean CurrentStateDpadup = false;
+    boolean CurrentStateDpaddown = false;
+    boolean PreviousStateDpadup = false;
+    boolean PreviousStateDpaddown = false;
 
-    public void init(){
-        motor = hardwareMap.get(DcMotor.class, "motor");
+// 10/12/21 by Samaika still need to complete up and down lift
 
+
+    public void init() {
+        lm.init(hardwareMap);
         servo = hardwareMap.get(Servo.class, "servo");
         servo.setPosition(0.5);
 
@@ -43,29 +53,62 @@ public class TestProgrammingBoard extends OpMode {
 
         imu.initialize(parameters);
 
-        MotorConfigurationType motorConfigType = motor.getMotorType();
-        telemetry.addData("Motor", " MaxRPM = %.2f  MaxRPMFraction = %.2f", motorConfigType.getMaxRPM(),
-                motorConfigType.getAchieveableMaxRPMFraction());
-        telemetry.addData("Motor", " AchieveableMaxTicksPerSec = %.2f", motorConfigType.getAchieveableMaxTicksPerSecond());
-        telemetry.addData("Motor ", " Ticks/Rot = %.2f  gearing = %.2f", motorConfigType.getTicksPerRev(),
-                motorConfigType.getGearing());
-        telemetry.addData("Motor Orientation", motorConfigType.getOrientation());
 
     }
 
 
-    public void loop(){
-        motor.setPower(-gamepad1.left_stick_y);
-        servo.setPosition(0.5*(gamepad1.right_stick_y + 1));
+    public void loop() {
+        telemetry.addData("Lift position", lm.motor.getCurrentPosition());
+        if (gamepad1.dpad_right) {
+            lm.Lift_Up_Manual();
+        }
+
+
+        if (gamepad1.dpad_left) {
+            lm.Lift_Down_Manual();
+        }
+
+
+        if (CurrentStateDpadup && CurrentStateDpadup != PreviousStateDpadup) {
+
+            if (lm.motor.getCurrentPosition() < LIFTPOSITION1) {
+                lm.Lift_To_Position(LIFTPOSITION1);
+            }
+            if (lm.motor.getCurrentPosition() < LIFTPOSITION2) {
+                lm.Lift_To_Position(LIFTPOSITION2);
+            }
+            if (lm.motor.getCurrentPosition() < LIFTPOSITION3) {
+                lm.Lift_To_Position(LIFTPOSITION3);
+            }
+            if (lm.motor.getCurrentPosition() < LIFTPOSITION4) {
+                lm.Lift_To_Position(LIFTPOSITION4);
+            }
+        }
+
+        servo.setPosition(0.5 * (gamepad1.right_stick_y + 1));
         Orientation orientation = imu.getAngularOrientation();
         telemetry.addData("Heading", "%.1f deg", orientation.firstAngle);
-        telemetry.addData("Ticks", motor.getCurrentPosition());
         telemetry.addData("Volts", analogInput.getVoltage());
         telemetry.addData("Touch", !digitalChannel.getState());
         telemetry.addData("Color", "R: %d  G: %d  B: %d", colorSensor.red(),
                 colorSensor.green(), colorSensor.blue());
         telemetry.addData("Distance (CM)", distanceSensor.getDistance(DistanceUnit.CM));
 
-    }
 
+        if (CurrentStateDpaddown && CurrentStateDpaddown != PreviousStateDpaddown) {
+
+            if (lm.motor.getCurrentPosition() < LIFTPOSITION1) {
+                lm.Lift_To_Position(LIFTPOSITION1);
+            }
+            if (lm.motor.getCurrentPosition() < LIFTPOSITION2) {
+                lm.Lift_To_Position(LIFTPOSITION2);
+            }
+            if (lm.motor.getCurrentPosition() < LIFTPOSITION3) {
+                lm.Lift_To_Position(LIFTPOSITION3);
+            }
+            if (lm.motor.getCurrentPosition() < LIFTPOSITION4) {
+                lm.Lift_To_Position(LIFTPOSITION4);
+            }
+        }
+    }
 }
