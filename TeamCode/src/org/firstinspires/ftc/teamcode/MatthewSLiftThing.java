@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 public class MatthewSLiftThing {
     DcMotor MatthewMotor=null;
 
-    public void init(HardwareMap hardwareMap,String Name){
-        MatthewMotor = hardwareMap.get(DcMotor.class, Name);
+    public void init(HardwareMap hwMap){
+        MatthewMotor = hwMap.get(DcMotor.class, "motor");
         MatthewMotor.setPower(0);
     }
 
@@ -34,8 +35,8 @@ public class MatthewSLiftThing {
         MatthewMotor.setTargetPosition(MatthewMotor.getCurrentPosition()-30);
         MatthewMotor.setPower(LiftSpeed);
     }
-    public int getLiftPosition() {
-        return MatthewMotor.getCurrentPosition();
+    public int getLiftPosition(int thingy) {
+        return MatthewMotor.getCurrentPosition()+thingy;
     }
     public void LiftToPosition(int PositionThing,double speedThing) {
         MatthewMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -45,7 +46,7 @@ public class MatthewSLiftThing {
         //.././././././...././././././.?>?>?*>?>*?>*??*?*?/8#*?#8//#*?*./8./#>*/.83?>*?8*./>.#?*>./#<>8./.?>*?#>?>#?>754../2.346321
     }
 
-    public void setLiftMode(DcMotor.RunMode bees) {
+    public void setLiftMode(RunMode bees) {
         MatthewMotor.setMode(bees);
     }
 }

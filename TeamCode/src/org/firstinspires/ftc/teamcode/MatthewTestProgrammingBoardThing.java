@@ -16,10 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name = "Matthew Lift Thing", group = "Test")
 public class MatthewTestProgrammingBoardThing extends OpMode {
-    MatthewSLiftThing MatthewLift1=null;
-    MatthewSLiftThing MatthewLift2=null;
-    MatthewSLiftThing MatthewLift3=null;
-    MatthewSLiftThing MatthewLift4=null;
+    MatthewSLiftThing MatthewLift1= new MatthewSLiftThing();
     Servo servo = null;
     BNO055IMU imu = null;
     ColorSensor colorSensor = null;
@@ -38,10 +35,8 @@ public class MatthewTestProgrammingBoardThing extends OpMode {
     boolean PreviousStateDpadDown=false;
 
     public void init(){
-        MatthewLift1.init(hardwareMap,"motor");
-        MatthewLift2.init(hardwareMap,"motor");
-        MatthewLift3.init(hardwareMap,"motor");
-        MatthewLift4.init(hardwareMap,"motor");
+        MatthewLift1.init(hardwareMap);
+        //Probably Not the problem
         servo = hardwareMap.get(Servo.class, "servo");
         servo.setPosition(0.5);
 
@@ -74,36 +69,63 @@ public class MatthewTestProgrammingBoardThing extends OpMode {
         if(gamepad1.dpad_left) {
             MatthewLift1.LiftDownManual(0.5);
         }
-        CurrentStateDpadUp= gamepad1.dpad_up;
-        CurrentStateDpadDown=gamepad1.dpad_down;
-    if(CurrentStateDpadUp&&CurrentStateDpadUp!=PreviousStateDpadUp) {
+        if(gamepad1.dpad_up == true && PreviousStateDpadUp == false) {
+            telemetry.addData("Prev = false and Current = True",1);
+            telemetry.addData("\nCurrent Lift Position",MatthewLift1.getLiftPosition(0));
+            if(MatthewLift1.getLiftPosition(10)<LIFTPOSITION1) {
+                telemetry.addData("\nLift Position less than 1 going to",1);
+                MatthewLift1.LiftToPosition(LIFTPOSITION1,0.5);
+            }
+            else if(MatthewLift1.getLiftPosition(10)<LIFTPOSITION2) {
 
-        if(MatthewLift1.getLiftPosition()<LIFTPOSITION1) {
+                telemetry.addData("\nLift Position less than 2 going to",2);
+                MatthewLift1.LiftToPosition(LIFTPOSITION2,0.5);
+            }
+            else if(MatthewLift1.getLiftPosition(10)<LIFTPOSITION3) {
 
-            MatthewLift1.LiftToPosition(LIFTPOSITION1,0.5);
+                telemetry.addData("\nLift Position less than 3 going to",3);
+                MatthewLift1.LiftToPosition(LIFTPOSITION3,0.5);
+            }
+            else if (MatthewLift1.getLiftPosition(10)<LIFTPOSITION4) {
 
+                telemetry.addData("\nLift Position less than 4 going to",4);
+                MatthewLift1.LiftToPosition(LIFTPOSITION4,0.5);
+            }
+            PreviousStateDpadUp=true;
         }
-        if(MatthewLift1.getLiftPosition()<LIFTPOSITION2) {
-
-            MatthewLift1.LiftToPosition(LIFTPOSITION2,0.5);
-
+        if(PreviousStateDpadUp == true && CurrentStateDpadUp == false) {
+            telemetry.addData("\nReset the previous state",0);
+            PreviousStateDpadUp=false;
         }
-        if(MatthewLift1.getLiftPosition()<LIFTPOSITION3) {
 
-            MatthewLift1.LiftToPosition(LIFTPOSITION3,0.5);
 
+        if(gamepad1.dpad_down&&!PreviousStateDpadDown) {
+
+            if(MatthewLift1.getLiftPosition(-10)>LIFTPOSITION4) {
+
+                MatthewLift1.LiftToPosition(LIFTPOSITION4,0.5);
+                telemetry.addData("\nPressed Down and the Lift Position is",4);
+            }
+            else if(MatthewLift1.getLiftPosition(-10)>LIFTPOSITION3) {
+
+                MatthewLift1.LiftToPosition(LIFTPOSITION3,0.5);
+                telemetry.addData("\nPressed Down and the Lift Position is",3);
+            }
+            else if(MatthewLift1.getLiftPosition(-10)>LIFTPOSITION2) {
+
+                MatthewLift1.LiftToPosition(LIFTPOSITION2,0.5);
+                telemetry.addData("\nPressed Down and the Lift Position is",2);
+            }
+            else if (MatthewLift1.getLiftPosition(-10)<LIFTPOSITION1) {
+
+                MatthewLift1.LiftToPosition(LIFTPOSITION1,0.5);
+                telemetry.addData("\nPressed Down and the Lift Position is",1);
+            }
+            PreviousStateDpadDown=true;
         }
-        if(MatthewLift1.getLiftPosition()<LIFTPOSITION4) {
 
-            MatthewLift1.LiftToPosition(LIFTPOSITION4,0.5);
-
+        if(PreviousStateDpadDown&&!CurrentStateDpadDown) {
+            PreviousStateDpadDown=false;
         }
-    }
-
-
-
-
-
-
     }
 }
